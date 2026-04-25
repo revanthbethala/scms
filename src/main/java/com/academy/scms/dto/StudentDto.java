@@ -2,10 +2,15 @@ package com.academy.scms.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class StudentDto {
 	private Integer id;
+	@NotBlank
 	private String name;
+	@NotBlank
 	private String email;
+
 	private List<CourseDto> courses;
 
 	public Integer getId() {
