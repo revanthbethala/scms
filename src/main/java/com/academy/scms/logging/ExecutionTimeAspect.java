@@ -10,21 +10,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExecutionTimeAspect {
 
-    private static final Logger log = LogManager.getLogger(ExecutionTimeAspect.class);
+	private static final Logger log = LogManager.getLogger(ExecutionTimeAspect.class);
 
-    @Around("execution(* com.academy.scms.service..*(..))")
-    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+	@Around("execution(* com.academy.scms.service..*(..))")
+	public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 
-        Object result = joinPoint.proceed();
+		Object result = joinPoint.proceed();
 
-        long time = System.currentTimeMillis() - start;
+		long time = System.currentTimeMillis() - start;
 
-        log.info("⏱ {} executed in {} ms",
-                joinPoint.getSignature().toShortString(),
-                time);
+		log.info("{} executed in {} ms", joinPoint.getSignature().toShortString(), time);
 
-        return result;
-    }
+		return result;
+	}
 }

@@ -1,6 +1,5 @@
 package com.academy.scms.service;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,93 +17,87 @@ import com.academy.scms.repository.CourseRepository;
 @Service
 public class CourseService {
 
-    private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
-    private final StudentMapper studentMapper;
+	private final CourseRepository courseRepository;
+	private final CourseMapper courseMapper;
+	private final StudentMapper studentMapper;
 
-    public CourseService(CourseRepository courseRepository,
-                         CourseMapper courseMapper,
-                         StudentMapper studentMapper) {
-        this.courseRepository = courseRepository;
-        this.courseMapper = courseMapper;
-        this.studentMapper = studentMapper;
-    }
+	public CourseService(CourseRepository courseRepository, CourseMapper courseMapper, StudentMapper studentMapper) {
+		this.courseRepository = courseRepository;
+		this.courseMapper = courseMapper;
+		this.studentMapper = studentMapper;
+	}
 
-    // GET ALL
-    public List<CourseDto> getAllCourses() {
-        return courseMapper.toDtoList(courseRepository.findAll());
-    }
+	public List<CourseDto> getAllCourses() {
+		return courseMapper.toDtoList(courseRepository.findAll());
+	}
 
-    // GET BY ID
-    public CourseDto getCourseById(Integer id) {
+	public CourseDto getCourseById(Integer id) {
 
-        Optional<CourseEntity> optional = courseRepository.findById(id);
+		Optional<CourseEntity> optional = courseRepository.findById(id);
 
-        if (optional.isPresent()) {
-            return courseMapper.toDto(optional.get());
-        } else {
-            throw new CourseNotFoundException(id);
-        }
-    }
+		if (optional.isPresent()) {
+			return courseMapper.toDto(optional.get());
+		} else {
+			throw new CourseNotFoundException(id);
+		}
+	}
 
-    // SEARCH
-    public List<CourseDto> searchByTitle(String title) {
-        return courseMapper.toDtoList(
-                courseRepository.findByTitleContainingIgnoreCase(title)
-        );
-    }
+	public List<CourseDto> searchByTitle(String title) {
+		return courseMapper.toDtoList(courseRepository.findByTitleContainingIgnoreCase(title));
+	}
 
-    // GET STUDENTS OF COURSE
-    public List<StudentDto> getStudentsByCourse(Integer id) {
+	public List<StudentDto> getStudentsByCourse(Integer id) {
 
-        Optional<CourseEntity> optional = courseRepository.findById(id);
+		Optional<CourseEntity> optional = courseRepository.findById(id);
 
-        if (!optional.isPresent()) {
-            throw new CourseNotFoundException(id);
-        }
+		if (!optional.isPresent()) {
+			throw new CourseNotFoundException(id);
+		}
 
-        List<StudentEntity> students = optional.get().getStudents();
+		List<StudentEntity> students = optional.get().getStudents();
 
-        return studentMapper.toDtoList(students);
-    }
+		return studentMapper.toDtoList(students);
+	}
 
-    // CREATE
-    public CourseDto createCourse(CourseDto dto) {
+	public CourseDto createCourse(CourseDto dto) {
 
-        CourseEntity entity = courseMapper.toEntity(dto);
+		CourseEntity entity = courseMapper.toEntity(dto);
 
-        CourseEntity saved = courseRepository.save(entity);
+		CourseEntity saved = courseRepository.save(entity);
 
-        return courseMapper.toDto(saved);
-    }
+		return courseMapper.toDto(saved);
+	}
 
-    // UPDATE
-    public CourseDto updateCourse(Integer id, CourseDto dto) {
+	public CourseDto updateCourse(Integer id, CourseDto dto) {
 
-        Optional<CourseEntity> optional = courseRepository.findById(id);
+		Optional<CourseEntity> optional = courseRepository.findById(id);
 
-        if (optional.isPresent()) {
-            CourseEntity existing = optional.get();
+		if (optional.isPresent()) {
+			CourseEntity existing = optional.get();
 
-            existing.setTitle(dto.getTitle());
+			existing.setTitle(dto.getTitle());
 
-            CourseEntity updated = courseRepository.save(existing);
+			CourseEntity updated = courseRepository.save(existing);
 
-            return courseMapper.toDto(updated);
-        } else {
-            throw new CourseNotFoundException(id);
-        }
-    }
+			return courseMapper.toDto(updated);
+		} else {
+			throw new CourseNotFoundException(id);
+		}
+	}
 
-    // DELETE
-    public void deleteCourse(Integer id) {
+	public void deleteCourse(Integer id) {
 
-        Optional<CourseEntity> optional = courseRepository.findById(id);
+		Optional<CourseEntity> optional = courseRepository.findById(id);
 
-        if (optional.isPresent()) {
-            courseRepository.delete(optional.get());
-        } else {
-            throw new CourseNotFoundException(id);
-        }
-    }
+		if (optional.isPresent()) {
+
+			CourseEntity course = optional.get();
+			for (StudentEntity student : course.getStudents()) {
+				student.getCourses().remove(course);
+			}
+			courseRepository.delete(course);
+		} else {
+			throw new CourseNotFoundException(id);
+		}
+	}
 }

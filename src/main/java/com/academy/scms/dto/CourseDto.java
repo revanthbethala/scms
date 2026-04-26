@@ -4,17 +4,18 @@ import java.util.List;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class CourseDto {
 	private Integer id;
 	@NotBlank
-	@Min(value = 3, message = "Atleast 3 chras needed")
+	@Size(min = 3, message = "Atleast 3 chras needed")
 	private String title;
 	@NotBlank
-	@Min(value = 10, message = "atleast 10 chars needed")
+	@Size(min = 10, message = "atleast 10 chars needed")
 	private String description;
 
-	private List<StudentDto> students;
+	private List<StudentSummaryDto> students;
 
 	public Integer getId() {
 		return id;
@@ -32,7 +33,7 @@ public class CourseDto {
 		this.title = title;
 	}
 
-	public List<StudentDto> getStudents() {
+	public List<StudentSummaryDto> getStudents() {
 		return students;
 	}
 
@@ -44,7 +45,7 @@ public class CourseDto {
 		this.description = description;
 	}
 
-	public void setStudents(List<StudentDto> students) {
+	public void setStudents(List<StudentSummaryDto> students) {
 		this.students = students;
 	}
 

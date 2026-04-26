@@ -4,12 +4,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.academy.scms.utils.ErrorResponseUtil;
 
@@ -22,6 +24,16 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, Object>> handleCourseNotFound(CourseNotFoundException ex) {
 
 		log.warn("Course not found: {}", ex.getMessage());
+
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	public ResponseEntity<Map<String, Object>> handleCourseNotFound(NoResourceFoundException ex) {
+
+		log.warn("Route not found: {}", ex.getMessage());
 
 		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
 
@@ -45,7 +57,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(NoHandlerFoundException.class)
-	public ResponseEntity<Map<String, Object>> handle404(NoHandlerFoundException ex) {
+	public ResponseEntity<Map<String, Object>> handleNotFound(NoHandlerFoundException ex) {
 
 		log.warn("404 Not Found: {} {}", ex.getHttpMethod(), ex.getRequestURL());
 
@@ -54,10 +66,21 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	public ResponseEntity<Map<String, Object>> handleNotSupported(HttpRequestMethodNotSupportedException ex) {
+
+		log.warn("405 Method Not Allowed: {} {}", ex.getMethod());
+
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.METHOD_NOT_ALLOWED,
+				"The " + ex.getMethod() + " method is not supported for this endpoint.");
+
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Map<String, Object>> handle500(Exception ex) {
 
-		log.error("Unhandled exception occurred", ex); // full stack trace
+		log.error("Unhandled exception", ex);
 
 		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.INTERNAL_SERVER_ERROR,
 				"Something went wrong");

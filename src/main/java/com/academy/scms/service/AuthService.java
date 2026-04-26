@@ -48,7 +48,7 @@ public class AuthService {
 		}
 
 		if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-			throw new InvalidCredentialsException("Passwords do not match");
+			throw new InvalidCredentialsException("Password and confirm password should be same");
 		}
 
 		StudentEntity entity = new StudentEntity();

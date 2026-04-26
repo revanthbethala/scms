@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
-
 import com.academy.scms.dto.StudentDto;
 import com.academy.scms.entity.StudentEntity;
 
@@ -15,6 +13,7 @@ public interface StudentMapper {
 
 	StudentDto toDto(StudentEntity entity);
 
+	@Mapping(target = "courses", ignore = true)
 	StudentEntity toEntity(StudentDto dto);
 
 	List<StudentDto> toDtoList(List<StudentEntity> entities);

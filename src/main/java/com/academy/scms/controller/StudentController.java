@@ -36,34 +36,28 @@ public class StudentController {
 		this.studentService = studentService;
 	}
 
-	// GET all students
 	@GetMapping
 	public ResponseEntity<Object> getAllStudents() {
-
 		List<StudentDto> students = studentService.getAllStudents();
-
-		return ResponseEntity.ok(Map.of("message", "Students fetched successfully", "data", students));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", students));
 	}
 
-	// GET student by id
 	@GetMapping("/{id}")
 	public ResponseEntity<Object> getStudentById(@PathVariable Integer id) {
 
 		StudentDto student = studentService.getStudentById(id);
 
-		return ResponseEntity.ok(Map.of("message", "Student fetched successfully", "data", student));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", student));
 	}
 
-	// SEARCH
 	@GetMapping("/search")
 	public ResponseEntity<Object> searchByName(@RequestParam String name) {
 
 		List<StudentDto> students = studentService.searchByName(name);
 
-		return ResponseEntity.ok(Map.of("message", "Search completed", "data", students));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", students));
 	}
 
-	// CREATE
 	@PostMapping
 	public ResponseEntity<Object> createStudent(@Valid @RequestBody StudentDto dto, BindingResult result) {
 
@@ -71,18 +65,16 @@ public class StudentController {
 
 		if (!validationErrors.isEmpty()) {
 			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Validation failed");
-			error.put("validationErrors", validationErrors);
+			error.put("error", validationErrors);
 
 			return ResponseEntity.badRequest().body(error);
 		}
 
 		StudentDto created = studentService.createStudent(dto);
 
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(Map.of("message", "Student created successfully", "data", created));
+		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Success", "data", created));
 	}
 
-	// UPDATE
 	@PutMapping("/{id}")
 	public ResponseEntity<Object> updateStudent(@PathVariable Integer id, @Valid @RequestBody StudentDto dto,
 			BindingResult result) {
@@ -91,32 +83,30 @@ public class StudentController {
 
 		if (!validationErrors.isEmpty()) {
 			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Validation failed");
-			error.put("validationErrors", validationErrors);
+			error.put("error", validationErrors);
 
 			return ResponseEntity.badRequest().body(error);
 		}
 
 		StudentDto updated = studentService.updateStudent(id, dto);
 
-		return ResponseEntity.ok(Map.of("message", "Student updated successfully", "data", updated));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", updated));
 	}
 
-	// DELETE
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteStudent(@PathVariable Integer id) {
 
 		studentService.deleteStudent(id);
 
-		return ResponseEntity.ok(Map.of("message", "Student deleted successfully"));
+		return ResponseEntity.ok(Map.of("message", "Success"));
 	}
 
-	// ENROLL
 	@PostMapping("/{id}/enroll/{cId}")
 	public ResponseEntity<Object> enrollCourse(@PathVariable Integer id, @PathVariable Integer cId) {
 
 		StudentDto updated = studentService.enrollCourse(id, cId);
 
-		return ResponseEntity.ok(Map.of("message", "Course enrolled successfully", "data", updated));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", updated));
 	}
 
 	// UNENROLL
@@ -125,7 +115,7 @@ public class StudentController {
 
 		StudentDto updated = studentService.unenrollCourse(id, cId);
 
-		return ResponseEntity.ok(Map.of("message", "Course unenrolled successfully", "data", updated));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", updated));
 	}
 
 	@ExceptionHandler(StudentAlreadyExistsException.class)

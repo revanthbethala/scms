@@ -17,6 +17,6 @@ public class ExceptionLoggingAspect {
     )
     public void logException(Exception ex) {
 
-        log.error("❌ Exception occurred: ", ex);
+        log.error("Exception occurred: ", ex);
     }
 }

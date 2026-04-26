@@ -40,7 +40,7 @@ public class CourseController {
 
 		List<CourseDto> courses = courseService.getAllCourses();
 
-		return ResponseEntity.ok(Map.of("message", "Courses fetched successfully", "data", courses));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", courses));
 	}
 
 	@GetMapping("/{id}")
@@ -48,7 +48,7 @@ public class CourseController {
 
 		CourseDto course = courseService.getCourseById(id);
 
-		return ResponseEntity.ok(Map.of("message", "Course fetched successfully", "data", course));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", course));
 	}
 
 	@GetMapping("/search")
@@ -59,7 +59,7 @@ public class CourseController {
 
 		List<CourseDto> courses = courseService.searchByTitle(title);
 
-		return ResponseEntity.ok(Map.of("message", "Search completed", "data", courses));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", courses));
 	}
 
 	@GetMapping("/{id}/students")
@@ -67,7 +67,7 @@ public class CourseController {
 
 		List<StudentDto> students = courseService.getStudentsByCourse(id);
 
-		return ResponseEntity.ok(Map.of("message", "Enrolled students fetched", "data", students));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", students));
 	}
 
 	@PostMapping
@@ -77,7 +77,7 @@ public class CourseController {
 
 		if (!errors.isEmpty()) {
 			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Validation failed");
-			error.put("validationErrors", errors);
+			error.put("error", errors);
 
 			return ResponseEntity.badRequest().body(error);
 		}
@@ -103,7 +103,7 @@ public class CourseController {
 
 		CourseDto updated = courseService.updateCourse(id, dto);
 
-		return ResponseEntity.ok(Map.of("message", "Course updated successfully", "data", updated));
+		return ResponseEntity.ok(Map.of("message", "Success", "data", updated));
 	}
 
 	@DeleteMapping("/{id}")
@@ -111,7 +111,7 @@ public class CourseController {
 
 		courseService.deleteCourse(id);
 
-		return ResponseEntity.ok(Map.of("message", "Course deleted successfully"));
+		return ResponseEntity.ok(Map.of("message", "Success"));
 	}
 
 }

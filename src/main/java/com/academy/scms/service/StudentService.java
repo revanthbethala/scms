@@ -29,13 +29,11 @@ public class StudentService {
 		this.studentMapper = studentMapper;
 	}
 
-	// GET all
 	public List<StudentDto> getAllStudents() {
 		List<StudentEntity> entities = studentRepository.findAll();
 		return studentMapper.toDtoList(entities);
 	}
 
-	// GET by id
 	public StudentDto getStudentById(Integer id) {
 
 		Optional<StudentEntity> optional = studentRepository.findById(id);
@@ -66,17 +64,16 @@ public class StudentService {
 		return studentMapper.toDto(saved);
 	}
 
-	// UPDATE
 	public StudentDto updateStudent(Integer id, StudentDto dto) {
 
 		Optional<StudentEntity> optional = studentRepository.findById(id);
 
 		if (optional.isPresent()) {
 			StudentEntity existing = optional.get();
-
 			existing.setName(dto.getName());
 			existing.setEmail(dto.getEmail());
-
+			existing.setPassword(dto.getPassword());
+			
 			StudentEntity updated = studentRepository.save(existing);
 			return studentMapper.toDto(updated);
 
@@ -85,7 +82,6 @@ public class StudentService {
 		}
 	}
 
-	// DELETE
 	public void deleteStudent(Integer id) {
 
 		Optional<StudentEntity> optional = studentRepository.findById(id);
@@ -97,7 +93,6 @@ public class StudentService {
 		}
 	}
 
-	// ENROLL
 	public StudentDto enrollCourse(Integer studentId, Integer courseId) {
 
 		Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
@@ -118,16 +113,17 @@ public class StudentService {
 			student.setCourses(new ArrayList<>());
 		}
 
-		// prevent duplicate
 		if (!student.getCourses().contains(course)) {
 			student.getCourses().add(course);
+		}
+		if (!course.getStudents().contains(student)) {
+			course.getStudents().add(student);
 		}
 
 		StudentEntity saved = studentRepository.save(student);
 		return studentMapper.toDto(saved);
 	}
 
-	// UNENROLL
 	public StudentDto unenrollCourse(Integer studentId, Integer courseId) {
 
 		Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
@@ -146,6 +142,9 @@ public class StudentService {
 
 		if (student.getCourses() != null) {
 			student.getCourses().remove(course);
+		}
+		if (!course.getStudents().contains(student)) {
+			course.getStudents().remove(student);
 		}
 
 		StudentEntity saved = studentRepository.save(student);

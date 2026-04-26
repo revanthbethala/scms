@@ -3,6 +3,7 @@ package com.academy.scms.dto;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class StudentDto {
 	private Integer id;
@@ -10,8 +11,10 @@ public class StudentDto {
 	private String name;
 	@NotBlank
 	private String email;
-
-	private List<CourseDto> courses;
+	@NotBlank
+	@Size(min = 8, message = "Password should be atleast 8 chars")
+	private String password;
+	private List<CourseSummaryDto> courses;
 
 	public Integer getId() {
 		return id;
@@ -37,11 +40,11 @@ public class StudentDto {
 		this.email = email;
 	}
 
-	public List<CourseDto> getCourses() {
+	public List<CourseSummaryDto> getCourses() {
 		return courses;
 	}
 
-	public void setCourses(List<CourseDto> courses) {
+	public void setCourses(List<CourseSummaryDto> courses) {
 		this.courses = courses;
 	}
 
@@ -49,5 +52,14 @@ public class StudentDto {
 	public String toString() {
 		return "StudentDto [id=" + id + ", name=" + name + ", email=" + email + ", courses=" + courses + "]";
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 
 }
