@@ -45,6 +45,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 		String token = authHeader.substring(7);
 		String subject = jwtUtil.validateTokenAndGetSubject(token);
+		String role = jwtUtil.getRoleFromToken(token);
 		if (subject == null) {
 			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.UNAUTHORIZED,
 					"Invalid or expired token");
@@ -55,17 +56,21 @@ public class AuthInterceptor implements HandlerInterceptor {
 			String[] pathParts = path.split("/");
 			if (pathParts.length >= 5) {
 				String idFromPath = pathParts[4];
-				if (idFromPath.matches("\\d+")) {
-					if (!idFromPath.equals(subject)) {
-						Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.FORBIDDEN,
-								"Access Denied: You can only modify your own data");
-						sendJsonError(response, error, HttpServletResponse.SC_FORBIDDEN);
-						return false;
-					}
+
+				boolean isAdmin = "ADMIN".equals(role);
+				boolean isOwner = idFromPath.equals(subject);
+
+				if (!isAdmin && !isOwner) {
+					Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.FORBIDDEN,
+							"Access Denied.");
+					sendJsonError(response, error, HttpServletResponse.SC_FORBIDDEN);
+					return false;
 				}
 			}
 		}
 		System.out.println("ID:" + subject);
+		
+		request.setAttribute("role", role);
 		request.setAttribute("subject", Integer.valueOf(subject));
 		return true;
 	}

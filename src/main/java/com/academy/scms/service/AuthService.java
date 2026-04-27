@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.academy.scms.dto.StudentDto;
 import com.academy.scms.entity.StudentEntity;
+import com.academy.scms.enums.UserRole;
 import com.academy.scms.exception.InvalidCredentialsException;
 import com.academy.scms.exception.StudentAlreadyExistsException;
 import com.academy.scms.mapper.StudentMapper;
@@ -47,6 +48,11 @@ public class AuthService {
 //		}
 
 		StudentEntity entity = new StudentEntity();
+		if (dto.getRole() == null) {
+			entity.setRole(UserRole.STUDENT);
+		} else {
+			entity.setRole(dto.getRole());
+		}
 		entity.setName(dto.getName());
 		entity.setEmail(dto.getEmail());
 		entity.setPassword(dto.getPassword());

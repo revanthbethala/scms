@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.academy.scms.dto.StudentDto;
+import com.academy.scms.enums.UserRole;
 import com.academy.scms.exception.StudentAlreadyExistsException;
 import com.academy.scms.exception.StudentNotFoundException;
+import com.academy.scms.security.RequireRole;
 import com.academy.scms.service.StudentService;
 import com.academy.scms.utils.ErrorResponseUtil;
 import com.academy.scms.utils.SuccessResponseUtil;
@@ -60,6 +62,7 @@ public class StudentController {
 	}
 
 	@PostMapping
+	@RequireRole(UserRole.ADMIN)
 	public ResponseEntity<Object> createStudent(@Valid @RequestBody StudentDto dto, BindingResult result) {
 		Map<String, String> validationErrors = ValidationUtil.getValidationErrors(result);
 		if (!validationErrors.isEmpty()) {
@@ -100,19 +103,6 @@ public class StudentController {
 		return SuccessResponseUtil.successResponse(studentService.unenrollCourse(id, cId));
 	}
 
-	@ExceptionHandler(StudentAlreadyExistsException.class)
-	public ResponseEntity<Map<String, Object>> handleExists(StudentAlreadyExistsException ex) {
-		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.CONFLICT, ex.getMessage());
 
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-	}
-
-	@ExceptionHandler(StudentNotFoundException.class)
-	public ResponseEntity<Map<String, Object>> handleStudentNotFound(StudentNotFoundException ex) {
-
-		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-	}
 
 }

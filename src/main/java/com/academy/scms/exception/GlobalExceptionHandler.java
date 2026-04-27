@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -25,6 +26,26 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, Object>> handleCourseNotFound(CourseNotFoundException ex) {
 		log.warn("Course not found: {}", ex.getMessage());
 		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+
+	@ExceptionHandler(StudentAlreadyExistsException.class)
+	public ResponseEntity<Map<String, Object>> handleExists(StudentAlreadyExistsException ex) {
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.CONFLICT, ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<Map<String, Object>> handleExistsinDB(DataIntegrityViolationException ex) {
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.CONFLICT, ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+	}
+
+	@ExceptionHandler(StudentNotFoundException.class)
+	public ResponseEntity<Map<String, Object>> handleStudentNotFound(StudentNotFoundException ex) {
+
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
+
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
 

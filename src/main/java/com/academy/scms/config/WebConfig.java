@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.academy.scms.security.AuthInterceptor;
+import com.academy.scms.security.RoleInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -20,10 +21,14 @@ import jakarta.servlet.http.HttpServletRequest;
 public class WebConfig implements WebMvcConfigurer {
 	@Autowired
 	private AuthInterceptor jwtInterceptor;
+	@Autowired
+	private RoleInterceptor roleInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(jwtInterceptor).addPathPatterns("/api/**").excludePathPatterns("/api/v1/auth/**");
+		registry.addInterceptor(roleInterceptor).addPathPatterns("/api/**").excludePathPatterns("/api/v1/auth/**");
+
 	}
 
 	@Autowired

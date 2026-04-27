@@ -12,15 +12,17 @@ public class StudentMapper {
 	public StudentDto toDto(StudentEntity entity, Integer loggedInId) {
 		if (entity == null)
 			return null;
+		if (loggedInId == null)
+			return null;
 
 		StudentDto dto = new StudentDto();
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		dto.setEmail(entity.getEmail());
+		dto.setRole(entity.getRole());
 		if (loggedInId != null && loggedInId.equals(entity.getId())) {
 			dto.setPassword(entity.getPassword());
 		}
-
 		return dto;
 	}
 
@@ -31,6 +33,7 @@ public class StudentMapper {
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		dto.setEmail(entity.getEmail());
+		dto.setRole(entity.getRole());
 		return dto;
 	}
 
@@ -52,6 +55,9 @@ public class StudentMapper {
 		StudentEntity entity = new StudentEntity();
 		entity.setId(dto.getId());
 		entity.setName(dto.getName());
+		entity.setEmail(dto.getEmail());
+		entity.setPassword(dto.getPassword());
+		entity.setRole(dto.getRole());
 		return entity;
 	}
 }

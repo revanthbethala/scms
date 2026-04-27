@@ -82,13 +82,13 @@ public class StudentService {
 	}
 
 	public StudentDto createStudent(StudentDto dto) {
-
+		System.out.println("dto:" + dto);
 		StudentEntity entity = studentMapper.toEntity(dto);
 
 		if (entity.getCourses() == null) {
 			entity.setCourses(new ArrayList<>());
 		}
-
+		System.out.println("entity:" + entity);
 		StudentEntity saved = studentRepository.save(entity);
 		return studentMapper.toDto(saved);
 	}

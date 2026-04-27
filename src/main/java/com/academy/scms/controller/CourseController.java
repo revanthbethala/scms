@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.academy.scms.dto.CourseDto;
+import com.academy.scms.enums.UserRole;
 import com.academy.scms.exception.InvalidDataFormatException;
+import com.academy.scms.security.RequireRole;
 import com.academy.scms.service.CourseService;
 import com.academy.scms.utils.ErrorResponseUtil;
 import com.academy.scms.utils.SuccessResponseUtil;
@@ -28,7 +30,6 @@ import jakarta.validation.Valid;
 public class CourseController {
 
 	private final CourseService courseService;
-
 	public CourseController(CourseService courseService) {
 		this.courseService = courseService;
 	}
@@ -58,6 +59,7 @@ public class CourseController {
 	}
 
 	@PostMapping
+	@RequireRole(UserRole.ADMIN)
 	public ResponseEntity<Object> createCourse(@Valid @RequestBody CourseDto dto, BindingResult result) {
 		Map<String, String> errors = ValidationUtil.getValidationErrors(result);
 
@@ -68,12 +70,12 @@ public class CourseController {
 		}
 
 		CourseDto created = courseService.createCourse(dto);
-		// Note: Keeping manual response here because of CREATED status and custom message
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(Map.of("message", "Course created successfully", "data", created));
 	}
 
 	@PutMapping("/{id}")
+	@RequireRole(UserRole.ADMIN)
 	public ResponseEntity<Object> updateCourse(@PathVariable Integer id, @RequestAttribute("subject") Integer studentId,
 			@Valid @RequestBody CourseDto dto, BindingResult result) {
 
@@ -89,6 +91,7 @@ public class CourseController {
 	}
 
 	@DeleteMapping("/{id}")
+	@RequireRole(UserRole.ADMIN)
 	public ResponseEntity<Object> deleteCourse(@PathVariable Integer id,
 			@RequestAttribute("subject") Integer studentId) {
 		courseService.deleteCourse(id, studentId);

@@ -2,10 +2,12 @@ package com.academy.scms.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.academy.scms.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +28,8 @@ public class StudentEntity {
 	@Column(unique = true)
 	private String email;
 	private String password;
-	@JsonIgnore
+	@Enumerated(EnumType.STRING)
+	private UserRole role;
 	@ManyToMany
 	@JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
 	private List<CourseEntity> courses;
@@ -61,6 +64,14 @@ public class StudentEntity {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
 	}
 
 	public List<CourseEntity> getCourses() {

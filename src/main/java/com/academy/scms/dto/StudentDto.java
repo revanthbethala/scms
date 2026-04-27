@@ -1,10 +1,12 @@
 package com.academy.scms.dto;
 
+import com.academy.scms.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentDto {
 	private Integer id;
@@ -16,6 +18,15 @@ public class StudentDto {
 	@NotBlank
 	@Size(min = 8, message = "Password should be atleast 8 chars")
 	private String password;
+	private UserRole role = UserRole.STUDENT; 
+
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+			this.role = role;
+	}
 
 	public Integer getId() {
 		return id;
@@ -53,6 +64,5 @@ public class StudentDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 }

@@ -28,7 +28,6 @@ public class CourseEntity {
 	private Integer id;
 	private String title;
 	private String description;
-
 	@CreatedBy
 	private Integer createdBy;
 	@LastModifiedBy

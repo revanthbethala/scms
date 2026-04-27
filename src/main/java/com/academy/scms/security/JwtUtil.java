@@ -20,7 +20,7 @@ public class JwtUtil {
 	@Value("${jwt.secret}")
 	private String secretKey;
 	@Value("${jwt.expire}")
-	private static long EXPIRATION_TIME;
+	private  long expiryTime;
 
 	SecretKey key;
 
@@ -30,9 +30,20 @@ public class JwtUtil {
 	}
 
 	public String generateToken(StudentDto student) {
+		System.out.println("expire:"+this.expiryTime);
 		return Jwts.builder().subject(String.valueOf(student.getId())).claim("name", student.getName())
-				.issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).signWith(key)
-				.compact();
+				.claim("role", student.getRole().name()).issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + this.expiryTime)).signWith(key).compact();
+	}
+
+	public String getRoleFromToken(String token) {
+		try {
+			return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get("role",
+					String.class);
+		} catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
 	}
 
 	public String validateTokenAndGetSubject(String token) {
@@ -41,7 +52,6 @@ public class JwtUtil {
 		} catch (Exception e) {
 			System.out.println(e);
 			return null;
-
 		}
 	}
 
