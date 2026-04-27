@@ -1,4 +1,4 @@
-package com.academy.scms.utils;
+package com.academy.scms.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -19,25 +19,30 @@ public class JwtUtil {
 
 	@Value("${jwt.secret}")
 	private String secretKey;
-
-	private static final long EXPIRATION_TIME = 3600000;
+	@Value("${jwt.expire}")
+	private static long EXPIRATION_TIME;
 
 	SecretKey key;
+
 	@PostConstruct
 	public void init() {
 		this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public String generateToken(StudentDto student) {
-		return Jwts.builder().subject(student.getEmail()).claim("name", student.getName()).issuedAt(new Date())
-				.expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).signWith(key).compact();
+		return Jwts.builder().subject(String.valueOf(student.getId())).claim("name", student.getName())
+				.issuedAt(new Date()).expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).signWith(key)
+				.compact();
 	}
 
 	public String validateTokenAndGetSubject(String token) {
 		try {
 			return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().getSubject();
 		} catch (Exception e) {
+			System.out.println(e);
 			return null;
+
 		}
 	}
+
 }

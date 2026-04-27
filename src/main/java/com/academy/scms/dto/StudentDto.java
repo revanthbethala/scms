@@ -1,20 +1,21 @@
 package com.academy.scms.dto;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentDto {
 	private Integer id;
 	@NotBlank
 	private String name;
-	@NotBlank
+	@NotBlank(message = "Email is required")
+	@Email(message = "Please provide a valid email address")
 	private String email;
 	@NotBlank
 	@Size(min = 8, message = "Password should be atleast 8 chars")
 	private String password;
-	private List<CourseSummaryDto> courses;
 
 	public Integer getId() {
 		return id;
@@ -40,17 +41,9 @@ public class StudentDto {
 		this.email = email;
 	}
 
-	public List<CourseSummaryDto> getCourses() {
-		return courses;
-	}
-
-	public void setCourses(List<CourseSummaryDto> courses) {
-		this.courses = courses;
-	}
-
 	@Override
 	public String toString() {
-		return "StudentDto [id=" + id + ", name=" + name + ", email=" + email + ", courses=" + courses + "]";
+		return "StudentDto [id=" + id + ", name=" + name + ", email=" + email + "]";
 	}
 
 	public String getPassword() {

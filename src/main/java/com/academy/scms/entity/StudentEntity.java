@@ -2,6 +2,8 @@ package com.academy.scms.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +26,7 @@ public class StudentEntity {
 	@Column(unique = true)
 	private String email;
 	private String password;
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
 	private List<CourseEntity> courses;

@@ -1,6 +1,12 @@
 package com.academy.scms.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -14,8 +20,43 @@ public class CourseDto {
 	@NotBlank
 	@Size(min = 10, message = "atleast 10 chars needed")
 	private String description;
+	private Integer createdBy;
+	private Integer modifedBy;
+	private LocalDateTime createdAt;
 
-	private List<StudentSummaryDto> students;
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Integer getModifedBy() {
+		return modifedBy;
+	}
+
+	public void setModifedBy(Integer modifedBy) {
+		this.modifedBy = modifedBy;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getModifiedAt() {
+		return modifiedAt;
+	}
+
+	public void setModifiedAt(LocalDateTime modifiedAt) {
+		this.modifiedAt = modifiedAt;
+	}
+
+	private LocalDateTime modifiedAt;
 
 	public Integer getId() {
 		return id;
@@ -33,10 +74,6 @@ public class CourseDto {
 		this.title = title;
 	}
 
-	public List<StudentSummaryDto> getStudents() {
-		return students;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -45,12 +82,8 @@ public class CourseDto {
 		this.description = description;
 	}
 
-	public void setStudents(List<StudentSummaryDto> students) {
-		this.students = students;
-	}
-
 	@Override
 	public String toString() {
-		return "CourseDto [id=" + id + ", title=" + title + ", students=" + students + "]";
+		return "CourseDto [id=" + id + ", title=" + title + "]";
 	}
 }

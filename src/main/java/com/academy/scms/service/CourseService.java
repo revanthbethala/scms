@@ -9,6 +9,7 @@ import com.academy.scms.dto.CourseDto;
 import com.academy.scms.dto.StudentDto;
 import com.academy.scms.entity.CourseEntity;
 import com.academy.scms.entity.StudentEntity;
+import com.academy.scms.exception.AccessDeniedException;
 import com.academy.scms.exception.CourseNotFoundException;
 import com.academy.scms.mapper.CourseMapper;
 import com.academy.scms.mapper.StudentMapper;
@@ -28,9 +29,12 @@ public class CourseService {
 	}
 
 	public List<CourseDto> getAllCourses() {
-		return courseMapper.toDtoList(courseRepository.findAll());
+	    List<CourseEntity> courses = courseRepository.findAll();
+	    if (courses.isEmpty()) {
+	        throw new CourseNotFoundException("No courses available");
+	    }
+	    return courseMapper.toDtoList(courses);
 	}
-
 	public CourseDto getCourseById(Integer id) {
 
 		Optional<CourseEntity> optional = courseRepository.findById(id);
@@ -43,19 +47,21 @@ public class CourseService {
 	}
 
 	public List<CourseDto> searchByTitle(String title) {
-		return courseMapper.toDtoList(courseRepository.findByTitleContainingIgnoreCase(title));
+	    List<CourseEntity> courses = courseRepository.findByTitleContainingIgnoreCase(title);
+	    if (courses.isEmpty()) {
+	        throw new CourseNotFoundException("No courses found with title: " + title);
+	    }
+	    return courseMapper.toDtoList(courses);
 	}
 
-	public List<StudentDto> getStudentsByCourse(Integer id) {
+	public List<StudentDto> getStudentsByCourse(Integer id,Integer loggedInId) {
 
 		Optional<CourseEntity> optional = courseRepository.findById(id);
 
 		if (!optional.isPresent()) {
 			throw new CourseNotFoundException(id);
 		}
-
 		List<StudentEntity> students = optional.get().getStudents();
-
 		return studentMapper.toDtoList(students);
 	}
 
@@ -68,13 +74,16 @@ public class CourseService {
 		return courseMapper.toDto(saved);
 	}
 
-	public CourseDto updateCourse(Integer id, CourseDto dto) {
+	public CourseDto updateCourse(Integer id, Integer studentId, CourseDto dto) {
 
 		Optional<CourseEntity> optional = courseRepository.findById(id);
 
 		if (optional.isPresent()) {
 			CourseEntity existing = optional.get();
 
+			if (existing.getCreatedBy() != studentId) {
+				throw new AccessDeniedException("You can't modfiy this course");
+			}
 			existing.setTitle(dto.getTitle());
 
 			CourseEntity updated = courseRepository.save(existing);
@@ -85,13 +94,16 @@ public class CourseService {
 		}
 	}
 
-	public void deleteCourse(Integer id) {
+	public void deleteCourse(Integer id, Integer studentId) {
 
 		Optional<CourseEntity> optional = courseRepository.findById(id);
 
 		if (optional.isPresent()) {
 
 			CourseEntity course = optional.get();
+			if (course.getCreatedBy() != studentId) {
+				throw new AccessDeniedException("You can't modfiy this course");
+			}
 			for (StudentEntity student : course.getStudents()) {
 				student.getCourses().remove(course);
 			}

@@ -10,6 +10,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -22,12 +23,26 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(CourseNotFoundException.class)
 	public ResponseEntity<Map<String, Object>> handleCourseNotFound(CourseNotFoundException ex) {
-
 		log.warn("Course not found: {}", ex.getMessage());
-
 		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.NOT_FOUND, ex.getMessage());
-
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<Map<String, Object>> handleMethArgs(MethodArgumentTypeMismatchException ex) {
+		log.warn("Invalid args recieve: {}", ex.getMessage());
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "invalid parameter values");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Map<String, Object>> handleAccess(AccessDeniedException ex) {
+
+		log.warn("Invalid args recieve: {}", ex.getMessage());
+
+		Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.FORBIDDEN, ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 	}
 
 	@ExceptionHandler(NoResourceFoundException.class)

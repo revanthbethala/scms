@@ -3,9 +3,10 @@
 	<Appenders>
 		<!-- specifies how logs should be presented on console -->
 		<Console name="LogToConsole" target="SYSTEM_OUT">
-			<!-- <PatternLayout pattern="%d [%t] %-5level sample-spring-app: %logger{36} 
-				- %msg%n" /> -->
-			<PatternLayout pattern="%c{1} - %m%n" />
+			<PatternLayout
+				pattern="%d [%t] %-5level sample-spring-app: %logger{36} 
+				- %msg%n" />
+			<!-- <PatternLayout pattern="%c{1} - %m%n" /> -->
 
 		</Console>
 		<File name="MyFileAppender" fileName="logs/app.log" level="warn">
