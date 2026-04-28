@@ -5,11 +5,15 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.academy.scms.dto.OnLogin;
+import com.academy.scms.dto.OnRegister;
 import com.academy.scms.dto.StudentDto;
 import com.academy.scms.exception.InvalidCredentialsException;
 import com.academy.scms.service.AuthService;
@@ -29,7 +33,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<Object> registerUser(@Valid @RequestBody StudentDto registrationDto, BindingResult result) {
+	public ResponseEntity<Object> registerUser(@Validated(OnRegister.class) @RequestBody StudentDto registrationDto, BindingResult result) {
 		Map<String, String> validationErrors = ValidationUtil.getValidationErrors(result);
 
 		if (!validationErrors.isEmpty()) {
@@ -43,9 +47,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<Object> loginUser(@Valid @RequestBody StudentDto loginDto, BindingResult result) {
-		System.out.println("err:" + result.hasErrors());
+	public ResponseEntity<Object> loginUser(@Validated(OnLogin.class) @RequestBody StudentDto loginDto, BindingResult result) {
 		if (result.hasErrors()) {
+			
 			return ResponseEntity.badRequest().body(ValidationUtil.getValidationErrors(result));
 		}
 

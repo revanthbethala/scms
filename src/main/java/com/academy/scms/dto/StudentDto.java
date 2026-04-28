@@ -10,22 +10,21 @@ import jakarta.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentDto {
 	private Integer id;
-	@NotBlank
+	@NotBlank(groups = OnRegister.class)
 	private String name;
-	@NotBlank(message = "Email is required")
-	@Email(message = "Please provide a valid email address")
+	@NotBlank(groups = { OnRegister.class, OnLogin.class })
+	@Email
 	private String email;
-	@NotBlank
-	@Size(min = 8, message = "Password should be atleast 8 chars")
+	@NotBlank(groups = { OnRegister.class, OnLogin.class })
 	private String password;
-	private UserRole role = UserRole.STUDENT; 
+	private UserRole role = UserRole.STUDENT;
 
 	public UserRole getRole() {
 		return role;
 	}
 
 	public void setRole(UserRole role) {
-			this.role = role;
+		this.role = role;
 	}
 
 	public Integer getId() {

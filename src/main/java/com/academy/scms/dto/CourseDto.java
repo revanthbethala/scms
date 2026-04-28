@@ -23,6 +23,7 @@ public class CourseDto {
 	private Integer createdBy;
 	private Integer modifedBy;
 	private LocalDateTime createdAt;
+	private LocalDateTime modifiedAt;
 
 	public Integer getCreatedBy() {
 		return createdBy;
@@ -55,8 +56,6 @@ public class CourseDto {
 	public void setModifiedAt(LocalDateTime modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
-
-	private LocalDateTime modifiedAt;
 
 	public Integer getId() {
 		return id;

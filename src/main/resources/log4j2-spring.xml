@@ -4,7 +4,7 @@
 		<!-- specifies how logs should be presented on console -->
 		<Console name="LogToConsole" target="SYSTEM_OUT">
 			<PatternLayout
-				pattern="%d [%t] %-5level sample-spring-app: %logger{36} 
+				pattern="%d [%t] %-5level - %logger{36} 
 				- %msg%n" />
 			<!-- <PatternLayout pattern="%c{1} - %m%n" /> -->
 
@@ -15,12 +15,10 @@
 		</File>
 	</Appenders>
 	<Loggers>
-		<!-- logger for specific package -->
-		<Logger name="com.academy.scms" level="debug" additivity="true">
+		<Logger name="com.academy.scms" level="debug" additivity="false">
 			<AppenderRef ref="LogToConsole" />
 		</Logger>
 
-		<!--Root logger information -->
 		<Root level="warn">
 			<AppenderRef ref="LogToConsole" />
 			<AppenderRef ref="MyFileAppender" />

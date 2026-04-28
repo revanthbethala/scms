@@ -18,9 +18,9 @@ public class CourseMapper {
 		dto.setTitle(entity.getTitle());
 		dto.setDescription(entity.getDescription());
 		dto.setModifedBy(entity.getModifedBy());
-		dto.setCreatedBy(dto.getCreatedBy());
+		dto.setCreatedBy(entity.getCreatedBy());
 		dto.setCreatedAt(entity.getCreatedAt());
-		dto.setModifedBy(entity.getModifedBy());
+		dto.setModifiedAt(entity.getModifiedAt());
 		return dto;
 	}
 

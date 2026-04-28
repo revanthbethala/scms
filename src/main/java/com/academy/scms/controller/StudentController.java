@@ -3,6 +3,7 @@ package com.academy.scms.controller;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -90,7 +91,7 @@ public class StudentController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteStudent(@PathVariable Integer id) {
 		studentService.deleteStudent(id);
-		return ResponseEntity.ok(Map.of("message", "Success"));
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
 	@PostMapping("/{id}/enroll/{cId}")
@@ -100,9 +101,7 @@ public class StudentController {
 
 	@DeleteMapping("/{id}/enroll/{cId}")
 	public ResponseEntity<Object> unenrollCourse(@PathVariable Integer id, @PathVariable Integer cId) {
-		return SuccessResponseUtil.successResponse(studentService.unenrollCourse(id, cId));
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-
-
 
 }

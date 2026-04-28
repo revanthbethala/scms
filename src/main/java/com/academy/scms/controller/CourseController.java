@@ -30,6 +30,7 @@ import jakarta.validation.Valid;
 public class CourseController {
 
 	private final CourseService courseService;
+
 	public CourseController(CourseService courseService) {
 		this.courseService = courseService;
 	}
@@ -62,13 +63,11 @@ public class CourseController {
 	@RequireRole(UserRole.ADMIN)
 	public ResponseEntity<Object> createCourse(@Valid @RequestBody CourseDto dto, BindingResult result) {
 		Map<String, String> errors = ValidationUtil.getValidationErrors(result);
-
 		if (!errors.isEmpty()) {
-			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Validation failed");
+			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Invalid data");
 			error.put("error", errors);
 			return ResponseEntity.badRequest().body(error);
 		}
-
 		CourseDto created = courseService.createCourse(dto);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(Map.of("message", "Course created successfully", "data", created));
@@ -82,7 +81,7 @@ public class CourseController {
 		Map<String, String> errors = ValidationUtil.getValidationErrors(result);
 
 		if (!errors.isEmpty()) {
-			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Validation failed");
+			Map<String, Object> error = ErrorResponseUtil.buildError(HttpStatus.BAD_REQUEST, "Invalid data");
 			error.put("validationErrors", errors);
 			return ResponseEntity.badRequest().body(error);
 		}
@@ -95,6 +94,6 @@ public class CourseController {
 	public ResponseEntity<Object> deleteCourse(@PathVariable Integer id,
 			@RequestAttribute("subject") Integer studentId) {
 		courseService.deleteCourse(id, studentId);
-		return SuccessResponseUtil.successResponse(null); // Or return a simple "Success" message
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
